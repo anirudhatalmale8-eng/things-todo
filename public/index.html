@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Things &mdash; a to-do list</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#9745;</text></svg>"
+    />
+  </head>
+  <body>
+    <main class="app">
+      <header class="app__head">
+        <h1 class="app__title">Things</h1>
+        <p class="app__sub" id="summary" data-testid="summary">Loading&hellip;</p>
+      </header>
+
+      <form class="composer" id="composer" autocomplete="off">
+        <input
+          class="composer__input"
+          id="new-todo"
+          data-testid="new-todo"
+          type="text"
+          name="title"
+          placeholder="What needs doing?"
+          maxlength="500"
+          aria-label="New to-do"
+        />
+        <button class="composer__btn" id="add-btn" data-testid="add-btn" type="submit">
+          Add
+        </button>
+      </form>
+
+      <nav class="filters" aria-label="Filter to-dos">
+        <button class="filters__btn is-active" data-filter="all" data-testid="filter-all">All</button>
+        <button class="filters__btn" data-filter="active" data-testid="filter-active">Active</button>
+        <button class="filters__btn" data-filter="done" data-testid="filter-done">Done</button>
+      </nav>
+
+      <ul class="list" id="list" data-testid="list"></ul>
+
+      <p class="empty" id="empty" data-testid="empty" hidden>Nothing here yet.</p>
+
+      <footer class="app__foot">
+        <button class="linkbtn" id="clear-done" data-testid="clear-done" hidden>
+          Clear completed
+        </button>
+      </footer>
+    </main>
+
+    <template id="row-template">
+      <li class="row" data-testid="todo">
+        <label class="row__check">
+          <input type="checkbox" data-testid="toggle" />
+          <span class="row__box" aria-hidden="true"></span>
+        </label>
+        <span class="row__title" data-testid="title"></span>
+        <button class="row__del" data-testid="delete" type="button" aria-label="Delete">
+          <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+            <path
+              d="M3 3l10 10M13 3L3 13"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              fill="none"
+            />
+          </svg>
+        </button>
+      </li>
+    </template>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

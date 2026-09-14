@@ -1,0 +1,32 @@
+PASS  page loads and finishes its initial API fetch                  
+PASS  title is correct                                               
+PASS  starts empty                                                   
+PASS  empty-state message is visible                                 
+PASS  adding three items renders three rows                          
+PASS  rows show the exact text that was typed, in order              
+PASS  counter reads '3 items left · 0 done'                          
+PASS  input clears after adding                                      
+PASS  pressing Enter adds an item                                    
+PASS  whitespace-only input is rejected                              
+PASS  checkbox stays checked after completing                        
+PASS  completed row gets the is-done class (strike-through styling)  
+PASS  completed row actually renders with line-through               
+PASS  counter updates to '3 items left · 1 done'                     
+PASS  'Done' filter shows only the completed item                    
+PASS  'Active' filter hides the completed item                       
+PASS  'All' filter shows everything again                            
+PASS  un-completing restores the active count                        
+PASS  deleting removes one row                                       
+PASS  the deleted item is gone and the others remain                 
+PASS  state survives a full page reload                              
+PASS  the completed item is still completed after reload             
+PASS  titles are intact after reload                                 
+PASS  GET /api/todos returns the same 3 items the UI shows           
+PASS  the completed flag is stored server-side                       
+PASS  'Clear completed' removes only completed items                 
+PASS  'Clear completed' button hides when nothing is completed       
+PASS  HTML in a to-do is escaped as text, not injected               
+PASS  no element was created from the injected markup                
+PASS  no JavaScript errors in the browser console                    
+
+30/30 checks passed

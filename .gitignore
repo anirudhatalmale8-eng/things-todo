@@ -1,0 +1,5 @@
+node_modules/
+data.json
+artifacts/server.log
+*.log
+__pycache__/

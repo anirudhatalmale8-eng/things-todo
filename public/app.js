@@ -9,6 +9,9 @@ const els = {
   clearDone: document.getElementById('clear-done'),
   template: document.getElementById('row-template'),
   filters: document.querySelectorAll('.filters__btn'),
+  confirm: document.getElementById('confirm'),
+  confirmItem: document.getElementById('confirm-item'),
+  confirmCancel: document.querySelector('[data-testid="confirm-cancel"]'),
 };
 
 let todos = [];
@@ -54,7 +57,7 @@ function render() {
 
       const del = row.querySelector('[data-testid="delete"]');
       del.setAttribute('aria-label', `Delete "${todo.title}"`);
-      del.addEventListener('click', () => remove(todo.id));
+      del.addEventListener('click', () => confirmThenRemove(todo));
 
       return row;
     })
@@ -95,6 +98,40 @@ async function toggle(id, done) {
   render();
 }
 
+// Deleting is the one irreversible action here, so it goes through a modal
+// confirmation. Resolves true only if the user explicitly picks Delete —
+// Cancel, Escape and a backdrop click all resolve false.
+function askToDelete(todo) {
+  if (els.confirm.open) return Promise.resolve(false);
+
+  els.confirmItem.textContent = todo.title;
+  els.confirm.returnValue = '';
+
+  const opener = document.activeElement;
+  els.confirm.showModal();
+  els.confirmCancel.focus(); // default to the safe choice
+
+  return new Promise((resolve) => {
+    els.confirm.addEventListener(
+      'close',
+      () => {
+        if (opener && opener.isConnected) opener.focus();
+        resolve(els.confirm.returnValue === 'delete');
+      },
+      { once: true }
+    );
+  });
+}
+
+async function confirmThenRemove(todo) {
+  if (!(await askToDelete(todo))) return;
+  try {
+    await remove(todo.id);
+  } catch (err) {
+    els.summary.textContent = `Could not delete: ${err.message}`;
+  }
+}
+
 async function remove(id) {
   await api(`/${id}`, { method: 'DELETE' });
   todos = todos.filter((t) => t.id !== id);
@@ -125,6 +162,12 @@ els.clearDone.addEventListener('click', () => {
   clearDone().catch((err) => {
     els.summary.textContent = `Could not clear: ${err.message}`;
   });
+});
+
+// A click that lands on the <dialog> itself (rather than its panel) is a click
+// on the backdrop — treat it as Cancel.
+els.confirm.addEventListener('click', (event) => {
+  if (event.target === els.confirm) els.confirm.close('cancel');
 });
 
 els.filters.forEach((btn) => {

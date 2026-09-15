@@ -1,32 +1,51 @@
-PASS  page loads and finishes its initial API fetch                  
-PASS  title is correct                                               
-PASS  starts empty                                                   
-PASS  empty-state message is visible                                 
-PASS  adding three items renders three rows                          
-PASS  rows show the exact text that was typed, in order              
-PASS  counter reads '3 items left · 0 done'                          
-PASS  input clears after adding                                      
-PASS  pressing Enter adds an item                                    
-PASS  whitespace-only input is rejected                              
-PASS  checkbox stays checked after completing                        
-PASS  completed row gets the is-done class (strike-through styling)  
-PASS  completed row actually renders with line-through               
-PASS  counter updates to '3 items left · 1 done'                     
-PASS  'Done' filter shows only the completed item                    
-PASS  'Active' filter hides the completed item                       
-PASS  'All' filter shows everything again                            
-PASS  un-completing restores the active count                        
-PASS  deleting removes one row                                       
-PASS  the deleted item is gone and the others remain                 
-PASS  state survives a full page reload                              
-PASS  the completed item is still completed after reload             
-PASS  titles are intact after reload                                 
-PASS  GET /api/todos returns the same 3 items the UI shows           
-PASS  the completed flag is stored server-side                       
-PASS  'Clear completed' removes only completed items                 
-PASS  'Clear completed' button hides when nothing is completed       
-PASS  HTML in a to-do is escaped as text, not injected               
-PASS  no element was created from the injected markup                
-PASS  no JavaScript errors in the browser console                    
+PASS  page loads and finishes its initial API fetch                   
+PASS  title is correct                                                
+PASS  starts empty                                                    
+PASS  empty-state message is visible                                  
+PASS  adding three items renders three rows                           
+PASS  rows show the exact text that was typed, in order               
+PASS  counter reads '3 items left · 0 done'                           
+PASS  input clears after adding                                       
+PASS  pressing Enter adds an item                                     
+PASS  whitespace-only input is rejected                               
+PASS  checkbox stays checked after completing                         
+PASS  completed row gets the is-done class (strike-through styling)   
+PASS  completed row actually renders with line-through                
+PASS  counter updates to '3 items left · 1 done'                      
+PASS  'Done' filter shows only the completed item                     
+PASS  'Active' filter hides the completed item                        
+PASS  'All' filter shows everything again                             
+PASS  un-completing restores the active count                         
+PASS  the confirm dialog is not shown until a × is clicked            
+PASS  clicking × opens a confirmation dialog                          
+PASS  the dialog asks "Delete this to-do?"                            
+PASS  the dialog names the item it is about to delete                 
+PASS  the dialog offers a Cancel button                               
+PASS  the dialog offers a Delete button                               
+PASS  the × alone deletes nothing while the dialog is open            
+PASS  Cancel takes the initial focus, so a stray Enter cannot delete  
+PASS  Cancel closes the dialog                                        
+PASS  Cancel keeps the item that was nearly deleted                   
+PASS  Cancel returns focus to the × that opened the dialog            
+PASS  Cancel deletes nothing server-side either                       
+PASS  Escape dismisses the dialog                                     
+PASS  Escape does not delete the item                                 
+PASS  clicking the backdrop dismisses the dialog                      
+PASS  clicking the backdrop does not delete the item                  
+PASS  confirming with Delete closes the dialog                        
+PASS  deleting removes one row                                        
+PASS  the deleted item is gone and the others remain                  
+PASS  state survives a full page reload                               
+PASS  the completed item is still completed after reload              
+PASS  titles are intact after reload                                  
+PASS  GET /api/todos returns the same 3 items the UI shows            
+PASS  the completed flag is stored server-side                        
+PASS  'Clear completed' removes only completed items                  
+PASS  'Clear completed' button hides when nothing is completed        
+PASS  HTML in a to-do is escaped as text, not injected                
+PASS  no element was created from the injected markup                 
+PASS  HTML is escaped in the confirm dialog as well                   
+PASS  no element was created from the markup echoed into the dialog   
+PASS  no JavaScript errors in the browser console                     
 
-30/30 checks passed
+49/49 checks passed

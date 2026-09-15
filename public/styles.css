@@ -244,6 +244,81 @@ body {
   background: var(--accent-soft);
 }
 
+/* -------------------------------------------------------- confirm dialog */
+
+.confirm {
+  width: min(380px, calc(100vw - 40px));
+  padding: 0;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 18px 50px rgb(0 0 0 / 0.22);
+}
+
+.confirm::backdrop {
+  background: rgb(18 17 15 / 0.42);
+}
+
+.confirm__panel {
+  padding: 22px 22px 18px;
+}
+
+.confirm__title {
+  font-size: 17px;
+  font-weight: 620;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.confirm__item {
+  color: var(--ink-soft);
+  font-size: 14px;
+  margin: 7px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.confirm__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.confirm__btn {
+  padding: 9px 16px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 560;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+}
+
+.confirm__btn:hover {
+  border-color: var(--ink-soft);
+}
+
+.confirm__btn:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.confirm__btn--danger {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.confirm__btn--danger:hover {
+  opacity: 0.88;
+  border-color: var(--accent);
+}
+
 /* ----------------------------------------------------------- empty/footer */
 
 .empty {

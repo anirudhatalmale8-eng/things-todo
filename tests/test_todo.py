@@ -193,9 +193,92 @@ def run_checks(page, base_url: str, r: Results) -> None:
     )
     second.get_by_test_id("toggle").check()  # re-complete for the persistence check
 
-    # -- 4. DELETE ----------------------------------------------------------
-    todos.filter(has_text="Water the ferns").get_by_test_id("delete").click()
+    # -- 4. DELETE, now behind a confirmation step --------------------------
+    dialog = page.get_by_test_id("confirm-dialog")
+    ferns = todos.filter(has_text="Water the ferns")
+    all_four = ["Buy oat milk", "Renew passport", "Water the ferns", "Added with the Enter key"]
 
+    r.check("the confirm dialog is not shown until a × is clicked", lambda: expect(dialog).to_be_hidden())
+
+    ferns.get_by_test_id("delete").click()
+
+    r.check("clicking × opens a confirmation dialog", lambda: expect(dialog).to_be_visible(timeout=TIMEOUT))
+    r.check(
+        'the dialog asks "Delete this to-do?"',
+        lambda: expect(page.get_by_test_id("confirm-title")).to_have_text("Delete this to-do?"),
+    )
+    r.check(
+        "the dialog names the item it is about to delete",
+        lambda: expect(page.get_by_test_id("confirm-item")).to_have_text("Water the ferns"),
+    )
+    r.check(
+        "the dialog offers a Cancel button",
+        lambda: expect(page.get_by_test_id("confirm-cancel")).to_have_text("Cancel"),
+    )
+    r.check(
+        "the dialog offers a Delete button",
+        lambda: expect(page.get_by_test_id("confirm-delete")).to_have_text("Delete"),
+    )
+    r.check(
+        "the × alone deletes nothing while the dialog is open",
+        lambda: expect(page.get_by_test_id("title")).to_have_text(all_four),
+    )
+    r.check(
+        "Cancel takes the initial focus, so a stray Enter cannot delete",
+        lambda: expect(page.get_by_test_id("confirm-cancel")).to_be_focused(),
+    )
+
+    page.screenshot(path=ARTIFACTS / "03-delete-confirmation.png")
+
+    # -- 4a. Cancel must leave everything exactly as it was -----------------
+    page.get_by_test_id("confirm-cancel").click()
+
+    r.check("Cancel closes the dialog", lambda: expect(dialog).to_be_hidden(timeout=TIMEOUT))
+    r.check(
+        "Cancel keeps the item that was nearly deleted",
+        lambda: expect(page.get_by_test_id("title")).to_have_text(all_four),
+    )
+    r.check(
+        "Cancel returns focus to the × that opened the dialog",
+        lambda: expect(ferns.get_by_test_id("delete")).to_be_focused(),
+    )
+
+    after_cancel = page.evaluate("() => fetch('/api/todos').then(r => r.json())")
+    r.check(
+        "Cancel deletes nothing server-side either",
+        lambda: _assert(
+            [t["title"] for t in after_cancel] == all_four,
+            f"API returned {[t['title'] for t in after_cancel]}",
+        ),
+    )
+
+    # -- 4b. Escape and backdrop clicks are also 'no' -----------------------
+    ferns.get_by_test_id("delete").click()
+    expect(dialog).to_be_visible(timeout=TIMEOUT)
+    page.keyboard.press("Escape")
+
+    r.check("Escape dismisses the dialog", lambda: expect(dialog).to_be_hidden(timeout=TIMEOUT))
+    r.check(
+        "Escape does not delete the item",
+        lambda: expect(page.get_by_test_id("title")).to_have_text(all_four),
+    )
+
+    ferns.get_by_test_id("delete").click()
+    expect(dialog).to_be_visible(timeout=TIMEOUT)
+    page.mouse.click(6, 6)  # the backdrop, well outside the dialog panel
+
+    r.check("clicking the backdrop dismisses the dialog", lambda: expect(dialog).to_be_hidden(timeout=TIMEOUT))
+    r.check(
+        "clicking the backdrop does not delete the item",
+        lambda: expect(page.get_by_test_id("title")).to_have_text(all_four),
+    )
+
+    # -- 4c. Confirming actually deletes ------------------------------------
+    ferns.get_by_test_id("delete").click()
+    expect(dialog).to_be_visible(timeout=TIMEOUT)
+    page.get_by_test_id("confirm-delete").click()
+
+    r.check("confirming with Delete closes the dialog", lambda: expect(dialog).to_be_hidden(timeout=TIMEOUT))
     r.check("deleting removes one row", lambda: expect(todos).to_have_count(3))
     r.check(
         "the deleted item is gone and the others remain",
@@ -204,7 +287,7 @@ def run_checks(page, base_url: str, r: Results) -> None:
         ),
     )
 
-    page.screenshot(path=ARTIFACTS / "03-item-deleted.png", full_page=True)
+    page.screenshot(path=ARTIFACTS / "04-item-deleted.png", full_page=True)
 
     # -- 5. PERSISTENCE (server-side, not just DOM state) -------------------
     page.reload(wait_until="domcontentloaded")
@@ -261,7 +344,22 @@ def run_checks(page, base_url: str, r: Results) -> None:
         lambda: _assert(page.locator("img[src='x']").count() == 0, "injected <img> was rendered"),
     )
 
-    page.screenshot(path=ARTIFACTS / "04-final-state.png", full_page=True)
+    # The dialog echoes the title back, so it has to escape it too. This also
+    # proves rows rendered *after* a reload still get the confirmation wiring.
+    todos.last.get_by_test_id("delete").click()
+    expect(dialog).to_be_visible(timeout=TIMEOUT)
+    r.check(
+        "HTML is escaped in the confirm dialog as well",
+        lambda: expect(page.get_by_test_id("confirm-item")).to_have_text(payload),
+    )
+    r.check(
+        "no element was created from the markup echoed into the dialog",
+        lambda: _assert(page.locator("img[src='x']").count() == 0, "injected <img> was rendered"),
+    )
+    page.get_by_test_id("confirm-cancel").click()
+    expect(dialog).to_be_hidden(timeout=TIMEOUT)
+
+    page.screenshot(path=ARTIFACTS / "05-final-state.png", full_page=True)
 
 
 def _assert(condition: bool, message: str) -> None:

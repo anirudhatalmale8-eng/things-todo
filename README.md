@@ -2,7 +2,7 @@
 
 Add, complete, delete. One page, no login, no accounts, no build step.
 
-![All 30 checks passing](artifacts/02-item-completed.png)
+![All 49 checks passing](artifacts/02-item-completed.png)
 
 ## Stack
 
@@ -28,7 +28,7 @@ Then open <http://localhost:3000>. Set `PORT` to use a different port.
 | --- | --- |
 | **Add** | Type and hit `Add` or `Enter`. Blank/whitespace-only input is rejected. |
 | **Complete** | Click the circle. Strike-through, and the counter updates. Click again to un-complete. |
-| **Delete** | Hover a row and click the `×`. |
+| **Delete** | Hover a row and click the `×`. A dialog asks **"Delete this to-do?"** with **Cancel** / **Delete** — nothing is removed until you confirm. Cancel, `Esc`, or a click outside all back out harmlessly. |
 | **Filters** | All / Active / Done. |
 | **Clear completed** | Appears only when something is completed. |
 | **Persistence** | State lives on the server, not in localStorage — reload or reopen and it's still there. |
@@ -62,10 +62,15 @@ The suite starts its own server on a free port with a throwaway data file, so ru
 never touches your real list. It drives real Chromium — clicking checkboxes, typing into the
 input, reloading the page — and asserts on what the browser actually renders.
 
-**30/30 checks pass.** Full log in [`artifacts/test-report.txt`](artifacts/test-report.txt).
+**49/49 checks pass.** Full log in [`artifacts/test-report.txt`](artifacts/test-report.txt).
 
 Beyond the three core features, it also verifies:
 
+- Clicking `×` deletes nothing on its own — it opens the confirmation dialog, and the item
+  is still there (in the DOM *and* in `GET /api/todos`) until `Delete` is clicked. `Cancel`,
+  `Esc`, and backdrop clicks are each checked separately.
+- `Cancel` holds the initial focus, so a stray `Enter` on an open dialog can't delete
+  anything, and focus returns to the `×` that opened it.
 - The counter and empty-state text stay in sync with the list.
 - Completed rows genuinely compute to `text-decoration-line: line-through` in the browser,
   not just that a CSS class was added.
@@ -74,8 +79,10 @@ Beyond the three core features, it also verifies:
 - HTML in a to-do title is escaped, with no element created from the injected markup.
 - No JavaScript errors reach the browser console during the entire run.
 
-Screenshots from the run are in [`artifacts/`](artifacts/): items added, one completed,
-one deleted, and the final state.
+Screenshots from the run are in [`artifacts/`](artifacts/): items added, one completed, the
+delete confirmation dialog, one deleted, and the final state.
+
+![The delete confirmation dialog](artifacts/03-delete-confirmation.png)
 
 ### A note on this box
 

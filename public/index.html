@@ -50,6 +50,40 @@
       </footer>
     </main>
 
+    <dialog
+      class="confirm"
+      id="confirm"
+      data-testid="confirm-dialog"
+      aria-labelledby="confirm-title"
+      aria-describedby="confirm-item"
+    >
+      <form method="dialog" class="confirm__panel">
+        <h2 class="confirm__title" id="confirm-title" data-testid="confirm-title">
+          Delete this to-do?
+        </h2>
+        <p class="confirm__item" id="confirm-item" data-testid="confirm-item"></p>
+        <div class="confirm__actions">
+          <button
+            class="confirm__btn"
+            data-testid="confirm-cancel"
+            type="submit"
+            value="cancel"
+            autofocus
+          >
+            Cancel
+          </button>
+          <button
+            class="confirm__btn confirm__btn--danger"
+            data-testid="confirm-delete"
+            type="submit"
+            value="delete"
+          >
+            Delete
+          </button>
+        </div>
+      </form>
+    </dialog>
+
     <template id="row-template">
       <li class="row" data-testid="todo">
         <label class="row__check">
